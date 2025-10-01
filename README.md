@@ -24,15 +24,3 @@ An interactive memory matching game designed to help learn IT acronyms and their
 6. If cards don't match, play passes to the next player
 7. Game ends when all pairs are found
 8. Player with the most matches wins!
-
-## Installation
-
-### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
-
-### Setup
-1. Clone the repository:
-```bash
-   git clone https://github.com/yourusername/acronym-memory-game.git
-   cd acronym-memory-game
