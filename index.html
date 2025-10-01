@@ -1,0 +1,317 @@
+import React, { useState, useEffect } from 'react';
+import { Users, Trophy, RotateCcw } from 'lucide-react';
+
+const AcronymMemoryGame = () => {
+  const [gameState, setGameState] = useState('setup');
+  const [numPlayers, setNumPlayers] = useState(1);
+  const [players, setPlayers] = useState(['']);
+  const [currentPlayer, setCurrentPlayer] = useState(0);
+  const [scores, setScores] = useState([0]);
+  const [cards, setCards] = useState([]);
+  const [flipped, setFlipped] = useState([]);
+  const [matched, setMatched] = useState([]);
+  const [canFlip, setCanFlip] = useState(true);
+
+  const acronymPairs = [
+    { acronym: '802.11ac', answer: 'WI-FI 5' },
+    { acronym: '802.11ax', answer: 'WI-FI 6' },
+    { acronym: 'AUP', answer: 'Acceptable Use Policy' },
+    { acronym: 'ACL', answer: 'Access Control List' },
+    { acronym: 'AES', answer: 'Advanced Encryption Standard' },
+    { acronym: 'ARM', answer: 'Advanced RISC Machine' },
+    { acronym: 'ATX', answer: 'Advanced Technology Extended' },
+    { acronym: 'BSOD', answer: 'Blue Screen of Death' },
+    { acronym: 'XSS', answer: 'Cross-Site Scripting' },
+    { acronym: 'DRM', answer: 'Digital Rights Management' },
+    { acronym: 'DNS', answer: 'Domain Name System' },
+    { acronym: 'DHCP', answer: 'Dynamic Host Configuration Protocol' },
+    { acronym: 'ESD', answer: 'Electrostatic Discharge' },
+    { acronym: 'HTTPS', answer: 'Hypertext Transfer Protocol Secure' },
+    { acronym: 'IaaS', answer: 'Infrastructure as a Service' },
+    { acronym: 'IMAP', answer: 'Internet Message Access Protocol' },
+    { acronym: 'IoT', answer: 'Internet of Things' },
+    { acronym: 'LAN', answer: 'Local Area Network' },
+    { acronym: 'LED', answer: 'Light-Emitting Diode' },
+    { acronym: 'LCD', answer: 'Liquid Crystal Display' },
+    { acronym: 'USB', answer: 'Universal Serial Bus' },
+    { acronym: 'NFC', answer: 'Near-Field Communication' },
+    { acronym: 'NTFS', answer: 'New Technology File System' },
+    { acronym: 'NIC', answer: 'Network Interface Card' },
+    { acronym: 'PaaS', answer: 'Platform as a Service' },
+    { acronym: 'PoE', answer: 'Power Over Ethernet' },
+    { acronym: 'RAM', answer: 'Random Access Memory' },
+    { acronym: 'RDP', answer: 'Remote Desktop Protocol' },
+    { acronym: 'RFID', answer: 'Radio Frequency Identification' },
+    { acronym: 'SaaS', answer: 'Software as a Service' },
+    { acronym: 'SATA', answer: 'Serial Advanced Technology Attachment' },
+    { acronym: 'SSO', answer: 'Single Sign-On' },
+    { acronym: 'SSD', answer: 'Solid State Drive' },
+    { acronym: 'SSH', answer: 'Secure Shell' },
+    { acronym: 'TCP', answer: 'Transmission Control Protocol' },
+    { acronym: 'TPM', answer: 'Trusted Platform Module' },
+    { acronym: 'UDP', answer: 'User Datagram Protocol' },
+    { acronym: 'VPN', answer: 'Virtual Private Network' },
+    { acronym: 'VLAN', answer: 'Virtual Local Area Network' },
+    { acronym: 'WAN', answer: 'Wide Area Network' }
+  ];
+
+  const initializeGame = () => {
+    const selectedPairs = acronymPairs.slice(0, 12);
+    const gameCards = [];
+    
+    selectedPairs.forEach((pair, index) => {
+      gameCards.push({
+        id: `acronym-${index}`,
+        pairId: index,
+        content: pair.acronym,
+        type: 'acronym'
+      });
+      gameCards.push({
+        id: `answer-${index}`,
+        pairId: index,
+        content: pair.answer,
+        type: 'answer'
+      });
+    });
+
+    const shuffled = gameCards.sort(() => Math.random() - 0.5);
+    setCards(shuffled);
+    setFlipped([]);
+    setMatched([]);
+    setCurrentPlayer(0);
+    setScores(new Array(numPlayers).fill(0));
+  };
+
+  const handleNameChange = (index, value) => {
+    const newPlayers = [...players];
+    newPlayers[index] = value;
+    setPlayers(newPlayers);
+  };
+
+  const handleNumPlayersChange = (num) => {
+    setNumPlayers(num);
+    setPlayers(new Array(num).fill(''));
+  };
+
+  const startGame = () => {
+    initializeGame();
+    setGameState('playing');
+  };
+
+  const handleCardClick = (index) => {
+    if (!canFlip || flipped.includes(index) || matched.includes(index)) return;
+
+    const newFlipped = [...flipped, index];
+    setFlipped(newFlipped);
+
+    if (newFlipped.length === 2) {
+      setCanFlip(false);
+      const [first, second] = newFlipped;
+      const firstCard = cards[first];
+      const secondCard = cards[second];
+
+      if (firstCard.pairId === secondCard.pairId) {
+        setTimeout(() => {
+          setMatched([...matched, first, second]);
+          setFlipped([]);
+          const newScores = [...scores];
+          newScores[currentPlayer]++;
+          setScores(newScores);
+          setCanFlip(true);
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          setFlipped([]);
+          setCurrentPlayer((currentPlayer + 1) % numPlayers);
+          setCanFlip(true);
+        }, 1500);
+      }
+    }
+  };
+
+  const resetGame = () => {
+    setGameState('setup');
+    setNumPlayers(1);
+    setPlayers(['']);
+  };
+
+  useEffect(() => {
+    if (matched.length === cards.length && cards.length > 0) {
+      setGameState('finished');
+    }
+  }, [matched, cards]);
+
+  const playerColors = [
+    'bg-purple-600',
+    'bg-orange-500',
+    'bg-purple-800',
+    'bg-orange-700'
+  ];
+
+  if (gameState === 'setup') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-600 via-purple-700 to-purple-900 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
+          <div className="flex items-center justify-center mb-6">
+            <Users className="text-purple-600 mr-3" size={40} />
+            <h1 className="text-3xl font-bold text-gray-800">Acronym Memory Match</h1>
+          </div>
+          
+          <div className="mb-6">
+            <label className="block text-sm font-semibold text-gray-700 mb-3">
+              Number of Players
+            </label>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4].map((num) => (
+                <button
+                  key={num}
+                  onClick={() => handleNumPlayersChange(num)}
+                  className={`flex-1 py-2 px-4 rounded-lg font-semibold transition-all ${
+                    numPlayers === num
+                      ? 'bg-gradient-to-r from-purple-600 to-orange-500 text-white'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  {num}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          <p className="text-gray-600 mb-4 text-center">Enter player names</p>
+          
+          {players.map((player, index) => (
+            <div key={index} className="mb-4">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Player {index + 1}
+              </label>
+              <input
+                type="text"
+                value={player}
+                onChange={(e) => handleNameChange(index, e.target.value)}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"
+                placeholder={`Enter name for Player ${index + 1}`}
+              />
+            </div>
+          ))}
+          
+          <button
+            onClick={startGame}
+            className="w-full mt-6 bg-gradient-to-r from-purple-600 to-orange-500 text-white font-bold py-3 px-6 rounded-lg hover:from-purple-700 hover:to-orange-600 transition-all"
+          >
+            Start Game
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (gameState === 'finished') {
+    const winner = scores.indexOf(Math.max(...scores));
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-600 via-purple-700 to-purple-900 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+          <Trophy className="text-yellow-500 mx-auto mb-4" size={64} />
+          <h1 className="text-4xl font-bold text-gray-800 mb-6">Game Over!</h1>
+          
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-purple-600 mb-4">Final Scores</h2>
+            {players.map((player, index) => (
+              <div key={index} className={`flex justify-between items-center p-3 mb-2 rounded-lg ${index === winner ? 'bg-yellow-100 border-2 border-yellow-500' : 'bg-gray-100'}`}>
+                <span className="font-semibold text-gray-800">{player || `Player ${index + 1}`}</span>
+                <span className={`font-bold ${index === winner ? 'text-yellow-600 text-xl' : 'text-gray-600'}`}>
+                  {scores[index]} {index === winner && '👑'}
+                </span>
+              </div>
+            ))}
+          </div>
+          
+          <button
+            onClick={resetGame}
+            className="w-full bg-gradient-to-r from-purple-600 to-orange-500 text-white font-bold py-3 px-6 rounded-lg hover:from-purple-700 hover:to-orange-600 transition-all flex items-center justify-center"
+          >
+            <RotateCcw className="mr-2" size={20} />
+            Play Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-600 via-purple-700 to-purple-900 p-4">
+      <div className="max-w-6xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-2xl p-6 mb-6">
+          <div className="flex justify-between items-center flex-wrap gap-4">
+            {players.map((player, index) => (
+              <div key={index} className={`flex-1 min-w-[150px] p-3 rounded-lg ${playerColors[index % playerColors.length]} ${currentPlayer === index ? 'ring-4 ring-yellow-400' : ''}`}>
+                <div className="text-white font-semibold text-center">{player || `Player ${index + 1}`}</div>
+                <div className="text-white text-2xl font-bold text-center">{scores[index]}</div>
+              </div>
+            ))}
+          </div>
+          {numPlayers > 1 && (
+            <div className="text-center mt-4 text-gray-700 font-semibold">
+              Current Turn: <span className="text-purple-600 text-lg">{players[currentPlayer] || `Player ${currentPlayer + 1}`}</span>
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-4 md:grid-cols-6 gap-3">
+          {cards.map((card, index) => {
+            const isFlipped = flipped.includes(index) || matched.includes(index);
+            const isMatched = matched.includes(index);
+            
+            return (
+              <div
+                key={card.id}
+                onClick={() => handleCardClick(index)}
+                className={`aspect-square cursor-pointer transition-all duration-300 transform hover:scale-105 ${
+                  !isFlipped ? 'hover:shadow-lg' : ''
+                }`}
+              >
+                <div className={`w-full h-full relative transition-transform duration-500 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
+                  <div className={`absolute w-full h-full rounded-lg flex items-center justify-center backface-hidden ${
+                    isMatched ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' : 
+                    'bg-white'
+                  } shadow-lg`}>
+                    {!isFlipped && (
+                      <div className="text-4xl text-purple-700 font-bold">?</div>
+                    )}
+                  </div>
+                  <div className={`absolute w-full h-full rounded-lg flex items-center justify-center backface-hidden rotate-y-180 ${
+                    isMatched ? 'bg-gradient-to-br from-yellow-500 to-amber-600' : 'bg-white'
+                  } shadow-lg p-2`}>
+                    <div className={`text-center font-semibold ${
+                      isMatched 
+                        ? 'text-white text-base'
+                        : card.type === 'acronym' 
+                        ? 'text-purple-700 text-lg' 
+                        : 'text-orange-600 text-sm'
+                    }`}>
+                      {card.content}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <style jsx>{`
+        .transform-style-3d {
+          transform-style: preserve-3d;
+        }
+        .backface-hidden {
+          backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+          transform: rotateY(180deg);
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default AcronymMemoryGame;
