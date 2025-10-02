@@ -195,6 +195,7 @@
             aspect-ratio: 1;
             cursor: pointer;
             perspective: 1000px;
+            -webkit-perspective: 1000px;
         }
 
         .card-inner {
@@ -203,10 +204,12 @@
             position: relative;
             transition: transform 0.5s;
             transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
         }
 
         .card.flipped .card-inner {
             transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
         }
 
         .card-face {
@@ -214,6 +217,7 @@
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -233,6 +237,7 @@
         .card-back {
             background: white;
             transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
         }
 
         .card.matched .card-back {
@@ -353,44 +358,118 @@
         const acronymPairs = [
             { acronym: '802.11ac', answer: 'WI-FI 5' },
             { acronym: '802.11ax', answer: 'WI-FI 6' },
+            { acronym: '802.11n', answer: 'WI-FI 4' },
             { acronym: 'AUP', answer: 'Acceptable Use Policy' },
             { acronym: 'ACL', answer: 'Access Control List' },
             { acronym: 'AES', answer: 'Advanced Encryption Standard' },
             { acronym: 'ARM', answer: 'Advanced RISC Machine' },
             { acronym: 'ATX', answer: 'Advanced Technology Extended' },
+            { acronym: 'APK', answer: 'Android Package' },
+            { acronym: 'APFS', answer: 'Apple File System' },
+            { acronym: 'AAA', answer: 'Authentication Authorization & Accounting' },
+            { acronym: 'ADF', answer: 'Automatic Document Feeder' },
             { acronym: 'BSOD', answer: 'Blue Screen of Death' },
             { acronym: 'XSS', answer: 'Cross-Site Scripting' },
             { acronym: 'DRM', answer: 'Digital Rights Management' },
+            { acronym: 'DVI', answer: 'Digital Visual Interface' },
+            { acronym: 'DDR3', answer: 'Double Data Rate 3' },
+            { acronym: 'DDR4', answer: 'Double Data Rate 4' },
+            { acronym: 'DDR5', answer: 'Double Data Rate 5' },
+            { acronym: 'DD-WRT', answer: 'Dresden Wireless Router' },
             { acronym: 'DNS', answer: 'Domain Name System' },
+            { acronym: 'DSL', answer: 'Digital Subscriber Line' },
             { acronym: 'DHCP', answer: 'Dynamic Host Configuration Protocol' },
+            { acronym: 'CIFS', answer: 'Common Internet File System' },
             { acronym: 'ESD', answer: 'Electrostatic Discharge' },
+            { acronym: 'EFS', answer: 'Encrypting File System' },
+            { acronym: 'EULA', answer: 'End-User License Agreement' },
+            { acronym: 'ECC', answer: 'Error-Correction Code' },
+            { acronym: 'exFAT', answer: 'Extensible File Allocation' },
+            { acronym: 'eSATA', answer: 'External SATA' },
+            { acronym: 'ext4', answer: 'Fourth Extended Filesystem' },
+            { acronym: 'GFS', answer: 'Grandfather Father Son' },
+            { acronym: 'HDD', answer: 'Hard Disk Drive' },
             { acronym: 'HTTPS', answer: 'Hypertext Transfer Protocol Secure' },
             { acronym: 'IaaS', answer: 'Infrastructure as a Service' },
             { acronym: 'IMAP', answer: 'Internet Message Access Protocol' },
+            { acronym: 'IPS', answer: 'In-Plane Switching' },
+            { acronym: 'ITX', answer: 'Information Technology Extended' },
+            { acronym: 'IDE', answer: 'Integrated Drive Electronics' },
             { acronym: 'IoT', answer: 'Internet of Things' },
+            { acronym: 'IP', answer: 'Internet Protocol' },
+            { acronym: 'macOS', answer: 'Apple Operating System' },
             { acronym: 'LAN', answer: 'Local Area Network' },
+            { acronym: 'LDAP', answer: 'Lightweight Directory Access' },
             { acronym: 'LED', answer: 'Light-Emitting Diode' },
             { acronym: 'LCD', answer: 'Liquid Crystal Display' },
+            { acronym: 'LC', answer: 'Lucent Connector' },
+            { acronym: 'M.2', answer: 'Solid State Drive or SSD' },
+            { acronym: 'MBR', answer: 'Master Boot Record' },
+            { acronym: 'MAN', answer: 'Metropolitan Area Network' },
+            { acronym: 'MSDS', answer: 'Material Safety Data Sheet' },
+            { acronym: 'mATX', answer: 'MicroATX' },
+            { acronym: 'MMC', answer: 'Microsoft Management Console' },
+            { acronym: 'MSRA', answer: 'Microsoft Remote Assistance' },
             { acronym: 'USB', answer: 'Universal Serial Bus' },
+            { acronym: 'MAM', answer: 'Mobile Application Management' },
+            { acronym: 'MDM', answer: 'Mobile Device Management' },
             { acronym: 'NFC', answer: 'Near-Field Communication' },
             { acronym: 'NTFS', answer: 'New Technology File System' },
             { acronym: 'NIC', answer: 'Network Interface Card' },
+            { acronym: 'NVMe', answer: 'Non-Volatile Memory Express' },
+            { acronym: 'ONT', answer: 'Optical Network Terminal' },
+            { acronym: 'OLED', answer: 'Organic LED' },
             { acronym: 'PaaS', answer: 'Platform as a Service' },
+            { acronym: 'PAN', answer: 'Personal Area Network' },
+            { acronym: 'PCI', answer: 'Peripheral Component Interconnect' },
+            { acronym: 'PII', answer: 'Personally Identifiable Information' },
             { acronym: 'PoE', answer: 'Power Over Ethernet' },
+            { acronym: 'POP3', answer: 'Post Office Protocol' },
+            { acronym: 'POST', answer: 'Power-On Self-Test' },
+            { acronym: 'PRL', answer: 'Preferred Roaming List' },
+            { acronym: 'PCL', answer: 'Printer Control Language' },
             { acronym: 'RAM', answer: 'Random Access Memory' },
             { acronym: 'RDP', answer: 'Remote Desktop Protocol' },
+            { acronym: 'RADIUS', answer: 'Remote Authentication Dial-In User Service' },
+            { acronym: 'RMM', answer: 'Remote Monitoring and Management' },
             { acronym: 'RFID', answer: 'Radio Frequency Identification' },
             { acronym: 'SaaS', answer: 'Software as a Service' },
             { acronym: 'SATA', answer: 'Serial Advanced Technology Attachment' },
+            { acronym: 'SPF', answer: 'Policy Framework' },
             { acronym: 'SSO', answer: 'Single Sign-On' },
+            { acronym: 'SCSI', answer: 'Small Computer System Interface' },
+            { acronym: 'SODIMM', answer: 'Small Outline Dual Inline Memory Module' },
+            { acronym: 'SMB', answer: 'Server Message Block' },
+            { acronym: 'SMTP', answer: 'Simple Mail Transfer Protocol' },
+            { acronym: 'SNMP', answer: 'Simple Network Management Protocol' },
+            { acronym: 'SDN', answer: 'Software-Defined Networking' },
             { acronym: 'SSD', answer: 'Solid State Drive' },
             { acronym: 'SSH', answer: 'Secure Shell' },
+            { acronym: 'SAN', answer: 'Storage Area Network' },
+            { acronym: 'ST', answer: 'Straight Tip' },
+            { acronym: 'SQL', answer: 'Structured Query Language' },
+            { acronym: 'SC', answer: 'Subscriber Connector' },
+            { acronym: 'SCADA', answer: 'Supervisory Control and Data Acquisition' },
             { acronym: 'TCP', answer: 'Transmission Control Protocol' },
+            { acronym: 'TFTP', answer: 'Trivial File Transfer Protocol' },
             { acronym: 'TPM', answer: 'Trusted Platform Module' },
+            { acronym: 'TN', answer: 'Twisted Nematic' },
             { acronym: 'UDP', answer: 'User Datagram Protocol' },
+            { acronym: 'UPnP', answer: 'Universal Plug and Play' },
+            { acronym: 'UAC', answer: 'User Account Control' },
+            { acronym: 'UTM', answer: 'Unified Threat Management' },
+            { acronym: 'VA', answer: 'Vertical Alignment' },
+            { acronym: 'VGA', answer: 'Video Graphics Array' },
+            { acronym: 'VRAM', answer: 'Video Random Access Memory' },
+            { acronym: 'VDI', answer: 'Virtual Desktop Infrastructure' },
+            { acronym: 'VNC', answer: 'Virtual Network Computing' },
             { acronym: 'VPN', answer: 'Virtual Private Network' },
             { acronym: 'VLAN', answer: 'Virtual Local Area Network' },
-            { acronym: 'WAN', answer: 'Wide Area Network' }
+            { acronym: 'WAN', answer: 'Wide Area Network' },
+            { acronym: 'WPA2', answer: 'Wi-Fi Protected Access 2' },
+            { acronym: 'WISP', answer: 'Wireless Internet Service Provider' },
+            { acronym: 'WWAN', answer: 'Wireless Wide Area Network' },
+            { acronym: 'WLAN', answer: 'Wireless Local Area Network' }
         ];
 
         let numPlayers = 1;
@@ -432,7 +511,10 @@
             matchedPairs = [];
             flippedCards = [];
 
-            const selectedPairs = acronymPairs.slice(0, 12);
+            // Shuffle all pairs and select random 12
+            const shuffledPairs = [...acronymPairs].sort(() => Math.random() - 0.5);
+            const selectedPairs = shuffledPairs.slice(0, 12);
+            
             cards = [];
             selectedPairs.forEach((pair, index) => {
                 cards.push({ id: index * 2, pairId: index, content: pair.acronym, type: 'acronym' });
